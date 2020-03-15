@@ -13,7 +13,7 @@ const chat = () => import('@/views/user/chat') // 小智同学
 const profile = () => import('@/views/user/profile') // 编辑资料
 const login = () => import('@/views/login') // 登录模块
 const search = () => import('@/views/search') // 搜索中心
-const searchresult = () => import('@/views/result') // 搜索结果
+const searchresult = () => import('@/views/search/result') // 搜索结果
 const article = () => import('@/views/article') // 文章中心
 const routes = [
   {
