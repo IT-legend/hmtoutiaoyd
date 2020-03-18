@@ -5,11 +5,13 @@
       <!-- 2- 放置子标签，title值为当前显示内容 -->
       <van-tab :title="`偷笑${item}`" v-for="item in 10" :key="item">
         <!-- 3- 放置文章列表 -->
-        <div class="scroll-wrapper">
+        <!-- <div class="scroll-wrapper">
           <van-cell-group>
             <van-cell title="标题" value="内容" v-for="item in 20" :key="item"></van-cell>
           </van-cell-group>
-        </div>
+        </div> -->
+        <!-- 有多少tab 就有多少个articlelist实例 -->
+        <ArticleList></ArticleList>
       </van-tab>
     </van-tabs>
     <!-- 4- 放置一个小图标 -->
@@ -22,9 +24,12 @@
 
 <script>
 // @ is an alias to /src
-
+import ArticleList from './components/article-list'
 export default {
-
+  name: 'Home',
+  components: {
+    ArticleList
+  }
 }
 </script>
 <style lang="less" scoped>
