@@ -77,7 +77,9 @@ export default {
     // 3- 定义登陆校验方法
     async login () {
       // 同时校验手机号和验证码
-      if (this.checkMobile() && this.checkCode()) {
+      const validateMobile = this.checkMobile()
+      const validateCode = this.checkCode()
+      if (validateMobile && validateCode) {
         // 如果两个检查结果都是true，表示通过校验
         // console.log('校验成功')
         // 校验成功后需要调接口验证用户名和验证码是否正确
@@ -97,7 +99,8 @@ export default {
             message: '手机号或验证码错误',
             duration: 1000
           })
-          // 这里我们要装个比
+          // 这里我们要装个比，自己封装一个方法
+          this.$wnotify({ message: '手机号或者验证码错误' })
         }
       }
     },
