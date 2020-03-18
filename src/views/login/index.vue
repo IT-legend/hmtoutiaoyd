@@ -20,6 +20,9 @@
 </template>
 
 <script>
+// 引入login方法
+import { login } from '@/api/user'
+import { mapMutations } from 'vuex' // 辅助函数可以把mutation方法映射到methods方法中
 export default {
   data () {
     return {
@@ -72,14 +75,34 @@ export default {
       return true
     },
     // 3- 定义登陆校验方法
-    login () {
+    async login () {
       // 同时校验手机号和验证码
       if (this.checkMobile() && this.checkCode()) {
         // 如果两个检查结果都是true，表示通过校验
-        console.log('校验成功')
+        // console.log('校验成功')
         // 校验成功后需要调接口验证用户名和验证码是否正确
+        try {
+          const result = await login(this.loginForm)
+          // console.log(result)
+          // 把结果设置给vuex中的state
+          // this.$store.commit('')
+          this.updateUser({ user: result }) // 相当于更新当前的token和refresh_token
+          // 更新完毕理当跳转到主页，但是如果是从别的页面跳过来的，应该跳回去，所以需要判断一下：是否有需要跳转的页面，有就跳转 没有去主页
+          const { redirectUrl } = this.$route.query // query查询参数也就是？后面的东西
+          // 有值跳转，没有就跳主页
+          this.$router.push(redirectUrl || '/') // 短路表达式
+        } catch (error) {
+          // 提示用户 告诉用户登陆失败
+          this.$notify({
+            message: '手机号或验证码错误',
+            duration: 1000
+          })
+          // 这里我们要装个比
+        }
       }
-    }
+    },
+    // 4- 获取vuex中定义的方法
+    ...mapMutations(['updateUser']) // 直接把vuex中的update方法映射到当前methods方法中
   }
 }
 </script>

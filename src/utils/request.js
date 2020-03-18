@@ -30,7 +30,7 @@ instance.interceptors.request.use(function (config) {
   return Promise.reject(error) // 会直接进入axios的catch中
 })
 // 2- 响应拦截器处理返回结果的数据，将多层嵌套的结构解构出来
-instance.interceptors.response.usr(function (response) {
+instance.interceptors.response.use(function (response) {
   // response已经被axios默认包了一层
   // response.data才是我们之前处理过的数据，几乎所有的返回数据都有一层data
   try {
