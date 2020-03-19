@@ -3,12 +3,13 @@
     <!-- 1- 放置tabs组件 -->
     <van-tabs>
       <!-- 2- 放置子标签，title值为当前显示内容 -->
+      <!-- van-tab时候vant组件的样式 -->
       <!-- 拿到channels数据之后，按要求填入 -->
       <van-tab :title="item.name" v-for="item in channels" :key="item.id">
         <!-- 生成若干个单元格 -->
         <!-- 有多少tab 就有多少个articlelist实例 -->
-        <!-- 需要将频道id传递给每一个列表组件：父=>子 props -->
-        <ArticleList :channels_id="item.id"></ArticleList>
+        <!-- 需要将频道id传递给每一个列表组件：父=>子(props) -->
+        <ArticleList :channel_id="item.id"></ArticleList>
       </van-tab>
     </van-tabs>
     <!-- 4- 放置一个小图标 -->
@@ -36,17 +37,18 @@ export default {
   },
   methods: {
     async getMyChannels () {
-      const data = await getMyChannels() // 接收返回的数据结果
-      // 将数据赋值给data中的数据
+      const data = await getMyChannels() // data接收返回的数据结果
+      // 将返回的数据赋值给data中的数据
       this.channels = data.channels
     }
   },
   created () {
-    // 直接获取频道数据
+    // 直接调用获取频道数据的方法
     this.getMyChannels()
   }
 }
 </script>
+
 <style lang='less' scoped>
 .van-tabs {
   height: 100%;
