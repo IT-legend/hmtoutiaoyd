@@ -3,15 +3,12 @@
     <!-- 1- 放置tabs组件 -->
     <van-tabs>
       <!-- 2- 放置子标签，title值为当前显示内容 -->
-      <van-tab :title="`偷笑${item}`" v-for="item in 10" :key="item">
-        <!-- 3- 放置文章列表 -->
-        <!-- <div class="scroll-wrapper">
-          <van-cell-group>
-            <van-cell title="标题" value="内容" v-for="item in 20" :key="item"></van-cell>
-          </van-cell-group>
-        </div> -->
+      <!-- 拿到channels数据之后，按要求填入 -->
+      <van-tab :title="item.name" v-for="item in channels" :key="item.id">
+        <!-- 生成若干个单元格 -->
         <!-- 有多少tab 就有多少个articlelist实例 -->
-        <ArticleList></ArticleList>
+        <!-- 需要将频道id传递给每一个列表组件：父=>子 props -->
+        <ArticleList :channels_id="item.id"></ArticleList>
       </van-tab>
     </van-tabs>
     <!-- 4- 放置一个小图标 -->
@@ -25,14 +22,32 @@
 <script>
 // @ is an alias to /src
 import ArticleList from './components/article-list'
+// 获取频道数据
+import { getMyChannels } from '@/api/channels'
 export default {
   name: 'Home',
   components: {
     ArticleList
+  },
+  data () {
+    return {
+      channels: [] // 接收频道数据
+    }
+  },
+  methods: {
+    async getMyChannels () {
+      const data = await getMyChannels() // 接收返回的数据结果
+      // 将数据赋值给data中的数据
+      this.channels = data.channels
+    }
+  },
+  created () {
+    // 直接获取频道数据
+    this.getMyChannels()
   }
 }
 </script>
-<style lang="less" scoped>
+<style lang='less' scoped>
 .van-tabs {
   height: 100%;
   display: flex;
