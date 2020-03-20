@@ -36,8 +36,12 @@
                 <span>{{ item.comm_count }}</span>
                 <span>{{ item.pubdate | relTime }}</span>
                 <!-- 此叉号的显示应该根据当前的登录状态来显示，如果登陆了就显示，没登录就不显示 -->
+                <!-- 1-最原始的方式处理： -->
                 <!-- <span class="close" v-if="$store.state.user.token"> -->
-                <span class="close" v-if="user.token">
+                  <!-- 2-辅助函数的形式处理 -->
+                  <!-- @事件名="逻辑处理" 点击事件中触发一个 显示反馈事件 传出点击的文章id -->
+                <span class="close" v-if="user.token"
+                @click="$emit('showAction',item.art_id.toString())">
                   <van-icon name="cross"></van-icon>
                 </span>
               </div>
