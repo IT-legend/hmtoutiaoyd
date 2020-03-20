@@ -9,6 +9,8 @@
         <!-- 生成若干个单元格 -->
         <!-- 有多少tab 就有多少个articlelist实例 -->
         <!-- 需要将频道id传递给每一个列表组件：父=>子(props) -->
+        <!-- 监听article-list触发的showAction事件 -->
+        <!-- 监听谁就给谁的标签写 -->
         <ArticleList :channel_id="item.id" @showAction="openAction"></ArticleList>
       </van-tab>
     </van-tabs>
@@ -20,7 +22,8 @@
     <!-- 放置一个弹层组件 -->
     <van-popup v-model="showMoreAction" style="width:80%">
       <!-- 放置反馈的组件 -->
-      <MoreAction />
+      <!-- 应该在此位置监听more-article触发的事件 -->
+      <MoreAction @dislike="dislikeArticle"/>
     </van-popup>
   </div>
 </template>
@@ -31,6 +34,7 @@ import ArticleList from './components/article-list'
 // 获取频道数据
 import { getMyChannels } from '@/api/channels'
 import MoreAction from './components/more-action'
+import { dislikeArticle } from '@/api/articles' // 不感兴趣接口
 export default {
   name: 'Home',
   components: {
@@ -56,6 +60,27 @@ export default {
       this.showMoreAction = true
       // 应该把id给存储起来
       this.articleId = artId
+    },
+    // 对文章不感兴趣的方法
+    async dislikeArticle () {
+      // 调接口
+      try {
+        await dislikeArticle({
+          target: this.articleId // 不感兴趣的id
+        })
+        // await下面的逻辑是resolve成功之后的
+        this.$wnotify({
+          type: 'success',
+          message: '操作成功'
+        })
+        // 小优化：操作成功后关闭弹层显示内容
+        this.showMoreAction = false
+      } catch (error) {
+        // 默认是红色
+        this.$wnotify({
+          message: '操作失败'
+        })
+      }
     }
   },
   created () {

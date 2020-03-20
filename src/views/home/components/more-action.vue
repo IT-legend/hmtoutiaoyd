@@ -3,7 +3,9 @@
       <!-- 单元格组1 -->
       <!-- v-if（前面满足，前面显示） （前面不满足，后面显示）v-else -->
       <van-cell-group v-if="!isReport">
-          <van-cell>不感兴趣</van-cell>
+          <!-- 给不感兴趣按钮注册点击事件，希望调用不感兴趣的接口 -->
+          <!-- 点击事件 实际上是调用父组件的方法 来触发接口 -->
+          <van-cell @click="$emit('dislike')">不感兴趣</van-cell>
           <van-cell is-link @click="isReport=true">反馈辣鸡内容</van-cell>
           <van-cell>拉黑作者</van-cell>
       </van-cell-group>
