@@ -9,7 +9,7 @@
         <!-- 生成若干个单元格 -->
         <!-- 有多少tab 就有多少个articlelist实例 -->
         <!-- 需要将频道id传递给每一个列表组件：父=>子(props) -->
-        <ArticleList :channel_id="item.id"></ArticleList>
+        <ArticleList :channel_id="item.id" @showAction="openAction"></ArticleList>
       </van-tab>
     </van-tabs>
     <!-- 4- 放置一个小图标 -->
@@ -17,6 +17,11 @@
       <!-- 放入vant图标 -->
       <van-icon name="wap-nav"></van-icon>
     </span>
+    <!-- 放置一个弹层组件 -->
+    <van-popup v-model="showMoreAction" style="width:80%">
+      <!-- 放置反馈的组件 -->
+      <MoreAction />
+    </van-popup>
   </div>
 </template>
 
@@ -25,14 +30,17 @@
 import ArticleList from './components/article-list'
 // 获取频道数据
 import { getMyChannels } from '@/api/channels'
+import MoreAction from './components/more-action'
 export default {
   name: 'Home',
   components: {
-    ArticleList
+    ArticleList,
+    MoreAction
   },
   data () {
     return {
-      channels: [] // 接收频道数据
+      channels: [], // 接收频道数据
+      showMoreAction: false // 是否显示弹层，默认不显示组件
     }
   },
   methods: {
@@ -40,6 +48,11 @@ export default {
       const data = await getMyChannels() // data接收返回的数据结果
       // 将返回的数据赋值给data中的数据
       this.channels = data.channels
+    },
+    // 此方法会在article-list组件触发，showAction的时候触发
+    openAction () {
+      // 此时应该弹出反馈层
+      this.showMoreAction = true
     }
   },
   created () {

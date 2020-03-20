@@ -35,7 +35,9 @@
                 <span>{{ item.aut_name }}</span>
                 <span>{{ item.comm_count }}</span>
                 <span>{{ item.pubdate | relTime }}</span>
-                <span class="close">
+                <!-- 此叉号的显示应该根据当前的登录状态来显示，如果登陆了就显示，没登录就不显示 -->
+                <!-- <span class="close" v-if="$store.state.user.token"> -->
+                <span class="close" v-if="user.token">
                   <van-icon name="cross"></van-icon>
                 </span>
               </div>
@@ -50,7 +52,12 @@
 <script>
 // 引入请求文章列表的api模块
 import { getArticles } from '@/api/articles'
+// 引入vuex辅助函数
+import { mapState } from 'vuex'
 export default {
+  computed: {
+    ...mapState(['user']) // 将vuex中定义的user属性映射到计算属性中
+  },
   data () {
     return {
       successText: '', // 定义下拉刷新成功的文本
