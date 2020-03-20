@@ -21,12 +21,13 @@
               <!-- 三张图片 -->
               <div class="img_box" v-if="item.cover.type === 3">
                 <!-- 图片组件用的是vant组件库中的图片组件，需要使用该组件完成图片的懒加载 -->
-                <van-image class="w33" fit="cover" :src="item.cover.images[0]"></van-image>
-                <van-image class="w33" fit="cover" :src="item.cover.images[1]"></van-image>
-                <van-image class="w33" fit="cover" :src="item.cover.images[2]"></van-image>
+                <!-- lazy-load表示图片采用懒加载模式，只有图片出现的时候才加载图片 -->
+                <van-image lazy-load class="w33" fit="cover" :src="item.cover.images[0]"></van-image>
+                <van-image lazy-load class="w33" fit="cover" :src="item.cover.images[1]"></van-image>
+                <van-image lazy-load class="w33" fit="cover" :src="item.cover.images[2]"></van-image>
               </div>
               <!-- 单图模式 暂时隐藏-->
-              <div class="img_box" v-if="item.cover.type === 1">
+              <div lazy-load class="img_box" v-if="item.cover.type === 1">
                 <van-image class="w100" fit="cover" :src="item.cover.images[0]"></van-image>
               </div>
               <!-- 作者信息 -->
