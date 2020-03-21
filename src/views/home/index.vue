@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <!-- 1- 放置tabs组件 -->
-    <van-tabs>
+    <!-- 1- 放置tabs组件 默认绑定激活页签-->
+    <van-tabs v-model="activeIndex">
       <!-- 2- 放置子标签，title值为当前显示内容 -->
       <!-- van-tab时候vant组件的样式 -->
       <!-- 拿到channels数据之后，按要求填入 -->
@@ -19,7 +19,7 @@
       <!-- 放入vant图标 -->
       <van-icon name="wap-nav"></van-icon>
     </span>
-    <!-- 放置一个弹层组件 -->
+    <!-- 放置一个弹层组件van-popup -->
     <van-popup v-model="showMoreAction" style="width:80%">
       <!-- 放置反馈的组件 -->
       <!-- 应该在此位置监听more-article触发的事件 -->
@@ -33,8 +33,10 @@
 import ArticleList from './components/article-list'
 // 获取频道数据
 import { getMyChannels } from '@/api/channels'
+// 直接在父级组件中引入反馈组件 并完成注册
 import MoreAction from './components/more-action'
 import { dislikeArticle } from '@/api/articles' // 不感兴趣接口
+import eventbus from '@/utils/eventbus' // 引入公共事件的处理器
 export default {
   name: 'Home',
   components: {
@@ -45,7 +47,8 @@ export default {
     return {
       channels: [], // 接收频道数据
       showMoreAction: false, // 是否显示弹层，默认不显示组件
-      articleId: null // 用来接收点击文章的id
+      articleId: null, // 用来接收点击文章的id
+      activeIndex: 0 // 当前默认激活的页面0
     }
   },
   methods: {
@@ -73,7 +76,11 @@ export default {
           type: 'success',
           message: '操作成功'
         })
-        // 小优化：操作成功后关闭弹层显示内容
+        // 成功后应该触发一个事件 通过eventbus的广播机制将对应的tab中的数据删除
+        // 出了传一个文章之外，还需要告诉现在处于哪个频道，可以传递频道id
+        // this.channels[this.activeIndex].id 就是当前激活的频道数据
+        eventbus.$emit('delArticle', this.articleId, this.channels[this.activeIndex].id) // 坚挺了这个事件组件 就要根据id来删除数据
+        // 最后：操作成功后关闭弹层显示内容
         this.showMoreAction = false
       } catch (error) {
         // 默认是红色
