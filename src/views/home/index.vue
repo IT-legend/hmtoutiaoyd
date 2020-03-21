@@ -35,7 +35,7 @@ import ArticleList from './components/article-list'
 import { getMyChannels } from '@/api/channels'
 // 直接在父级组件中引入反馈组件 并完成注册
 import MoreAction from './components/more-action'
-import { dislikeArticle } from '@/api/articles' // 不感兴趣接口
+import { dislikeArticle, reportArticle } from '@/api/articles' // 不感兴趣接口
 import eventbus from '@/utils/eventbus' // 引入公共事件的处理器
 export default {
   name: 'Home',
@@ -65,12 +65,13 @@ export default {
       this.articleId = artId
     },
     // 对文章不感兴趣的方法
-    async dislikeArticle () {
+    // operateType 是操作类型 如果是dislike 就是不喜欢 如果是 report 就是 举报
+    async dislikeOrReport (operateType, type) {
       // 调接口
       try {
-        await dislikeArticle({
+        operateType === 'dislike' ? await dislikeArticle({
           target: this.articleId // 不感兴趣的id
-        })
+        }) : await reportArticle({ target: this.articleId, type }) // 这里的type通过$event导出即可
         // await下面的逻辑是resolve成功之后的
         this.$wnotify({
           type: 'success',
@@ -89,6 +90,26 @@ export default {
         })
       }
     }
+    // // 举报文章
+    // async reportArticle (type) {
+    //   try {
+    //   // 调用举报文章接口
+    //     await reportArticle({ target: this.articleId, type })
+    //     this.$gnotify({
+    //       type: 'success',
+    //       message: '操作成功'
+    //     })
+    //     // await下方认为举报成功
+    //     // 同样的也要讲举报的文章删除掉
+    //     eventbus.$emit('delArticle', this.articleId, this.channels[this.activeIndex].id)
+    //     this.showMoreAction = false // 此时关闭弹层
+    //   } catch (error) {
+    //     // 默认是红色
+    //     this.$gnotify({
+    //       message: '操作失败'
+    //     })
+    //   }
+    // }
   },
   created () {
     // 直接调用获取频道数据的方法
