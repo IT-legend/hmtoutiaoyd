@@ -34,7 +34,8 @@
       <!-- 此时将父组件的频道数据传递给了子组件 -->
       <ChannelEdit :channels="channels" @selectChannel='selectChannel'
       :activeIndex="activeIndex"
-      @delChannel='delChannel'></ChannelEdit>
+      @delChannel='delChannel'
+      @addChannel='addChannel'></ChannelEdit>
     </van-action-sheet>
   </div>
 </template>
@@ -43,7 +44,7 @@
 // @ is an alias to /src
 import ArticleList from './components/article-list'
 // 获取频道数据
-import { getMyChannels, delChannel } from '@/api/channels'
+import { getMyChannels, delChannel, addChannel } from '@/api/channels'
 // 直接在父级组件中引入反馈组件 并完成注册
 import MoreAction from './components/more-action'
 import { dislikeArticle, reportArticle } from '@/api/articles' // 不感兴趣接口
@@ -66,6 +67,12 @@ export default {
     }
   },
   methods: {
+    // 定义添加我的频道方法
+    async addChannel (channel) {
+      // 这里需要调用api接口 将频道写入缓存 成功后 将该频道添加到data数据中
+      await addChannel(channel) // 传入参数 写入缓存
+      this.channels.push(channel) // 同时将添加的channel频道添加到data中
+    },
     // 定义删除我的频道的方法
     async delChannel (id) {
       // 此时应该先调用接口api
