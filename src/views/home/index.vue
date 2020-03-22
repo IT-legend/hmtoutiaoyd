@@ -31,7 +31,8 @@
     <!-- 频道编辑组件放在弹出面板的组件上 -->
     <van-action-sheet v-model="showChannelEdit" title="编辑频道" :round="false">
       <!-- 放置频道编辑组件 -->
-      <ChannelEdit></ChannelEdit>
+      <!-- 此时将父组件的频道数据传递给了子组件 -->
+      <ChannelEdit :channels="channels"></ChannelEdit>
     </van-action-sheet>
   </div>
 </template>

@@ -7,12 +7,14 @@
         <van-button v-if="!editing" @click="editing=true" size="mini" type="info" plain>编辑</van-button>
         <van-button v-else @click="editing=false" size="mini" type="danger" plain>完成</van-button>
       </div>
-      <!-- 1-1 我的频道的循环选项 -->
+      <!-- 1-1 我的全部频道的循环选项 -->
     <!-- 我的频道的数据是当前用户自己的频道（登陆情况下的和匿名情况下的） -->
       <van-grid class="van-hairline--left">
-        <van-grid-item v-for="index in 8" :key="index">
-          <span class="f12">频道{{index}}</span>
-          <van-icon class="btn" name="cross"></van-icon>
+        <van-grid-item v-for="(item,index) in channels" :key="item.id">
+          <span class="f12">{{ item.name }}</span>
+          <!-- 叉号标签应该在进入编辑状态时显示 退出编辑时隐藏-->
+          <!-- 下标为0的第一个选项不允许删除 -->
+          <van-icon class="btn" name="cross" v-if="index!==0 && editing"></van-icon>
         </van-grid-item>
       </van-grid>
     </div>
@@ -37,7 +39,17 @@ export default {
     return {
       editing: false // 正在编辑状态，用这个状态来控制是否显示删除图标
     }
+  },
+  //   props: ['channels'] // 可以直接用props接收父组件传递过来的channels
+  props: {
+    channels: {
+      // required 必传 type 类型 default 默认值
+      required: true, // 表示必须传递channels
+      type: Array,
+      default: () => [] // 默认值给空数组 表示此函数返回一个空数组
+    }
   }
+
 }
 </script>
 
