@@ -19,7 +19,8 @@
           :class="{red: index === activeIndex }">{{ item.name }}</span>
           <!-- 叉号标签应该在进入编辑状态时显示 退出编辑时隐藏-->
           <!-- 下标为0的第一个选项不允许删除 -->
-          <van-icon class="btn" name="cross" v-if="index!==0 && editing"></van-icon>
+          <!-- 点击叉号应该调用父组件删除方法 并传出当前要删除的id-->
+          <van-icon class="btn" name="cross" v-if="index!==0 && editing" @click="$emit('delChannel',item.id)"></van-icon>
         </van-grid-item>
       </van-grid>
     </div>
