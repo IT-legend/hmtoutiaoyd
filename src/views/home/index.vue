@@ -23,7 +23,10 @@
     <van-popup v-model="showMoreAction" style="width:80%">
       <!-- 放置反馈的组件 -->
       <!-- 应该在此位置监听more-article触发的事件 -->
-      <MoreAction @dislike="dislikeArticle"/>
+      <!-- 不喜欢文章和举报文章用一个方法 -->
+      <!-- @事件名="方法名"  @事件名="方法名()" @事件名="方法名($event 参数)" @事件名="逻辑" -->
+        <!-- $event 是事件参数 在h5标签中 dom元素的事件参数  自定义事件中$event 就是自定义事件传出的第一个参数 -->
+      <MoreAction @dislike="dislikeOrReport('dislike')" @report="dislikeOrReport('report',$event)"/>
     </van-popup>
   </div>
 </template>
