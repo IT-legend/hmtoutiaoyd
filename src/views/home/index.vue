@@ -32,7 +32,8 @@
     <van-action-sheet v-model="showChannelEdit" title="编辑频道" :round="false">
       <!-- 放置频道编辑组件 -->
       <!-- 此时将父组件的频道数据传递给了子组件 -->
-      <ChannelEdit :channels="channels" @selectChannel='selectChannel'></ChannelEdit>
+      <ChannelEdit :channels="channels" @selectChannel='selectChannel'
+      :activeIndex="activeIndex"></ChannelEdit>
     </van-action-sheet>
   </div>
 </template>

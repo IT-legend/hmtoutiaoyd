@@ -15,7 +15,8 @@
             <!-- 方法一：传id -->
           <!-- <span class="f12" @click="$emit('selectChannel',item.id)">{{ item.name }}</span> -->
           <!-- 方法二：传索引 -->
-          <span class="f12" @click="$emit('selectChannel',index)">{{ item.name }}</span>
+          <span class="f12" @click="$emit('selectChannel',index)"
+          :class="{red: index === activeIndex }">{{ item.name }}</span>
           <!-- 叉号标签应该在进入编辑状态时显示 退出编辑时隐藏-->
           <!-- 下标为0的第一个选项不允许删除 -->
           <van-icon class="btn" name="cross" v-if="index!==0 && editing"></van-icon>
@@ -53,6 +54,12 @@ export default {
       required: true, // 表示必须传递channels
       type: Array,
       default: () => [] // 默认值给空数组 表示此函数返回一个空数组
+    },
+    // 父组件传递过来的被选中的下标索引
+    activeIndex: {
+      required: true, // 表示必须传递索引
+      type: Number, // 指定type是number类型
+      default: 0 // 可写可不写
     }
   },
   methods: {
