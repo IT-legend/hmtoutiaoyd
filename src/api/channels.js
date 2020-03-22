@@ -8,3 +8,10 @@ export function getMyChannels () {
     url: '/user/channels'
   })
 }
+
+// 获取全部频道数据 没有参数 默认是get类型
+export function getAllChannels () {
+  return request({
+    url: '/channels'
+  })
+}

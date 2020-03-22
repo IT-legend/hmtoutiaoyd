@@ -7,7 +7,7 @@
         <van-button v-if="!editing" @click="editing=true" size="mini" type="info" plain>编辑</van-button>
         <van-button v-else @click="editing=false" size="mini" type="danger" plain>完成</van-button>
       </div>
-      <!-- 1-1 我的全部频道的循环选项 -->
+      <!-- 1-1 我的频道的循环选项 -->
     <!-- 我的频道的数据是当前用户自己的频道（登陆情况下的和匿名情况下的） -->
       <van-grid class="van-hairline--left">
         <van-grid-item v-for="(item,index) in channels" :key="item.id">
@@ -24,8 +24,8 @@
       <div class="tit">可选频道：</div>
       <!-- 2-1 可选频道的循环选项 -->
       <van-grid class="van-hairline--left">
-        <van-grid-item v-for="index in 8" :key="index">
-          <span class="f12">频道{{index}}</span>
+        <van-grid-item v-for="item in optionalChannels" :key="item.id">
+          <span class="f12">{{ item.name }}</span>
           <van-icon class="btn" name="plus"></van-icon>
         </van-grid-item>
       </van-grid>
@@ -34,10 +34,12 @@
 </template>
 
 <script>
+import { getAllChannels } from '@/api/channels'
 export default {
   data () {
     return {
-      editing: false // 正在编辑状态，用这个状态来控制是否显示删除图标
+      editing: false, // 正在编辑状态，用这个状态来控制是否显示删除图标
+      allChannels: [] // 定义变量接收全部的频道数据
     }
   },
   //   props: ['channels'] // 可以直接用props接收父组件传递过来的channels
@@ -48,6 +50,22 @@ export default {
       type: Array,
       default: () => [] // 默认值给空数组 表示此函数返回一个空数组
     }
+  },
+  methods: {
+    async getAllChannels () {
+      const data = await getAllChannels()
+      this.allChannels = data.channels
+    }
+  },
+  //   因为可选频道是一个动态的属性，所以用计算属性实现全部频道-我的频道=可选频道的功能
+  computed: {
+    optionalChannels () {
+      //   全部频道-当前频道
+      return this.allChannels.filter(item => !this.channels.some(o => o.id === item.id))
+    }
+  },
+  created () {
+    this.getAllChannels() // 调用组件方法
   }
 
 }
