@@ -30,10 +30,11 @@
       <div class="tit">可选频道：</div>
       <!-- 2-1 可选频道的循环选项 -->
       <van-grid class="van-hairline--left">
-        <van-grid-item v-for="item in optionalChannels" :key="item.id">
+        <van-grid-item v-for="item in optionalChannels" :key="item.id"
+        @click="$emit('addChannel',item)">
           <span class="f12">{{ item.name }}</span>
           <!-- 找到+号图标 注册点击事件 -->
-          <van-icon class="btn" name="plus" @click="$emit('addChannel',item)"></van-icon>
+          <van-icon class="btn" name="plus"></van-icon>
         </van-grid-item>
       </van-grid>
     </div>
