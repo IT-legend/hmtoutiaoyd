@@ -41,3 +41,31 @@ export function getAllChannels () {
     url: '/channels'
   })
 }
+
+// 删除频道的api
+export function delChannel (id) {
+  return new Promise(function (resolve, reject) {
+    // 有id了，可以直接从缓存中删除对应的id的数据
+    // 删除频道时，是肯定有数据的，因为之前获取时设定了
+    const key = store.state.user.token ? CACHE_CHANNEL_V : CACHE_CHANNEL_T // key根据当前的登录状态来判断
+    const channels = JSON.parse(localStorage.getItem(key)) // 直接将本地缓存中的字符串转为对象
+    // 第一种方法：
+    // 直接用filter删除 filter会直接返回一个数组 返回不等于id的内容
+    // channels = channels.filter(item => item.id !== id) // 得到一个新数组
+    // 应该重新写入缓存
+    // localStorage.setItem(key, JSON.stringify(channels))
+
+    // 第二种方法：
+    const index = channels.findIndex(item => item.id === id) // 找到对应频道的索引
+    if (index > -1) {
+      // 因为索引下标从0开始
+      channels.splice(index, 1) // 删除对应的下标元素
+      localStorage.setItem(key, JSON.stringify(channels)) // 重新写入缓存
+      // 如果执行成功，应该直接resolve
+      resolve({ message: '删除成功' })
+    } else {
+      // 如果没有找到对应的下标
+      reject(new Error('没有找到对应频道'))
+    }
+  })
+}
