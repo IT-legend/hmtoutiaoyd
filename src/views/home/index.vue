@@ -32,7 +32,7 @@
     <van-action-sheet v-model="showChannelEdit" title="编辑频道" :round="false">
       <!-- 放置频道编辑组件 -->
       <!-- 此时将父组件的频道数据传递给了子组件 -->
-      <ChannelEdit :channels="channels"></ChannelEdit>
+      <ChannelEdit :channels="channels" @selectChannel='selectChannel'></ChannelEdit>
     </van-action-sheet>
   </div>
 </template>
@@ -64,6 +64,22 @@ export default {
     }
   },
   methods: {
+    // 当子组件触发selectChannel时，触发这个方法，获取到了子组件中的item.id
+    // selectChannel (id) {
+    //   // alert(id)
+    //   // 拿到id后 需要找到id对应得频道索引
+    //   const index = this.channels.findIndex(item => item.id === id) // 获取索引
+    //   // 然后将获取的索引直接赋值给当前激活的索引即可完成切换
+    //   this.activeIndex = index
+    //   this.showChannelEdit = false
+    // },
+    // 方法二：传索引
+    selectChannel (index) {
+      // alert(id)
+      // 拿到传过来的index后 直接将其设置为对应的频道索引即可
+      this.activeIndex = index
+      this.showChannelEdit = false
+    },
     async getMyChannels () {
       const data = await getMyChannels() // data接收返回的数据结果
       // 将返回的数据赋值给data中的数据

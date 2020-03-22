@@ -11,7 +11,11 @@
     <!-- 我的频道的数据是当前用户自己的频道（登陆情况下的和匿名情况下的） -->
       <van-grid class="van-hairline--left">
         <van-grid-item v-for="(item,index) in channels" :key="item.id">
-          <span class="f12">{{ item.name }}</span>
+            <!-- 实现点击我的频道跳转到相应频道的页面 => 将点击的频道id或者索引传出去 传给父级-->
+            <!-- 方法一：传id -->
+          <!-- <span class="f12" @click="$emit('selectChannel',item.id)">{{ item.name }}</span> -->
+          <!-- 方法二：传索引 -->
+          <span class="f12" @click="$emit('selectChannel',index)">{{ item.name }}</span>
           <!-- 叉号标签应该在进入编辑状态时显示 退出编辑时隐藏-->
           <!-- 下标为0的第一个选项不允许删除 -->
           <van-icon class="btn" name="cross" v-if="index!==0 && editing"></van-icon>
