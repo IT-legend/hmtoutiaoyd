@@ -14,14 +14,19 @@
     <!-- 历史记录部分 所有搜索记录都会在这里展示 输入框无内容时，这里显示-->
     <!-- <div class="history-box" v-if="!q"> -->
     <div class="history-box" v-else>
-      <div class="head">
+      <!-- 如果没有历史记录，就隐藏掉这个单元格 -->
+      <div class="head" v-if="historyList.length">
         <span>历史记录</span>
         <van-icon name="delete"></van-icon>
       </div>
       <van-cell-group>
-        <van-cell>
-          <a class="word_btn">电脑</a>
-          <van-icon class="close_btn" slot="right-icon" name="cross" />
+        <!-- 需要把这个位置变成动态的真实数据 -->
+        <van-cell v-for="(item,index) in historyList" :key="index">
+          <!-- 显示循环内容 -->
+          <a class="word_btn">{{ item }}</a>
+          <!-- 给按钮注册删除历史记录方法 -->
+          <van-icon class="close_btn" slot="right-icon" name="cross"
+          @click="delHistory(index)"/>
         </van-cell>
       </van-cell-group>
     </div>
@@ -29,13 +34,28 @@
 </template>
 
 <script>
+const key = 'heima-94-history' // 此key用来作为历史记录在本地缓存中的key
 export default {
   name: 'search',
   data () {
     return {
-      q: '' // 关键字的数据
+      q: '', // 关键字的数据
+      // 当data初始化时会读取后面的数据
+      historyList: JSON.parse(localStorage.getItem(key) || '[]') // 定义接收历史记录数据的空变量
+    }
+  },
+  methods: {
+    // 删除历史
+    delHistory (index) {
+      // 先在data中删除 然后将data中的数据同步到本地缓存中
+      this.hostoryList.splice(index, 1) // 直接删除对应的历史记录数据，还要将数据同步到本地缓存
+      localStorage.setItem(key, JSON.stringify(this.historyList))
     }
   }
+  // created () {
+  //   // 钩子函数实例初始化之后 读取本地缓存数据
+  //   this.historyList = JSON.parse(localStorage.getItem(key) || '[]')
+  // }
 }
 </script>
 
