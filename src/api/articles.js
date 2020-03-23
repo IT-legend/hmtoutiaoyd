@@ -33,3 +33,10 @@ export function getSuggestion (params) {
     params // query参数放在params中
   })
 }
+// 封装一个搜索文章的方法
+export function searchAticle (params) {
+  return request({
+    url: '/search',
+    params // 关键词以及分页信息
+  })
+}
