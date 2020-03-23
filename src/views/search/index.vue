@@ -4,7 +4,7 @@
     <van-nav-bar left-arrow title="搜索中心" @click-left="$router.back()"></van-nav-bar>
     <!-- 导航 -->
     <!-- 搜索组件 -->
-    <van-search v-model.trim="q" placeholder="请输入搜索关键词" shape="round" />
+    <van-search @search="onSearch" v-model.trim="q" placeholder="请输入搜索关键词" shape="round" />
     <!-- 联想内容 ：当输入框有内容时 显示联想 -->
     <van-cell-group class="suggest-box" v-if="q">
       <van-cell icon="search">
@@ -17,16 +17,18 @@
       <!-- 如果没有历史记录，就隐藏掉这个单元格 -->
       <div class="head" v-if="historyList.length">
         <span>历史记录</span>
-        <van-icon name="delete"></van-icon>
+        <!-- 清空历史记录按钮 注册点击事件 -->
+        <van-icon @click="clear" name="delete"></van-icon>
       </div>
       <van-cell-group>
         <!-- 需要把这个位置变成动态的真实数据 -->
-        <van-cell v-for="(item,index) in historyList" :key="index">
+        <van-cell @click="toSerachResult(item)" v-for="(item,index) in historyList" :key="index">
           <!-- 显示循环内容 -->
           <a class="word_btn">{{ item }}</a>
           <!-- 给按钮注册删除历史记录方法 -->
+          <!-- 此时事件冒泡了，需要阻止冒泡，vue中用修饰符直接阻止事件冒泡 -->
           <van-icon class="close_btn" slot="right-icon" name="cross"
-          @click="delHistory(index)"/>
+          @click.stop="delHistory(index)"/>
         </van-cell>
       </van-cell-group>
     </div>
@@ -48,8 +50,53 @@ export default {
     // 删除历史
     delHistory (index) {
       // 先在data中删除 然后将data中的数据同步到本地缓存中
-      this.hostoryList.splice(index, 1) // 直接删除对应的历史记录数据，还要将数据同步到本地缓存
+      this.historyList.splice(index, 1) // 直接删除对应的历史记录数据，还要将数据同步到本地缓存
       localStorage.setItem(key, JSON.stringify(this.historyList))
+    },
+    // 跳转到搜索结果页
+    toSerachResult (text) {
+      // 如何实现跳转
+      // this.$router 是路由对象实例
+      // this.$route 是当前路由页面对象的信息 当前的地址啊、params参数、query参数、fullPath等等
+      // 这里需要路由传参
+      // 方法一 直接地址拼接传参
+      // this.$router.push('/search/result?q=' + text)
+      // 方法二 采用对象传参形式
+      this.$router.push({
+        path: '/search/result',
+        query: { q: text }
+      })
+    },
+    // 清空历史记录
+    async clear () {
+      // 本身也支持promise
+      try {
+        await this.$dialog.confirm({
+          title: 'warning',
+          message: 'Are you sure？'
+        })
+        // 成功就执行下面代码，将本地历史记录设置为空
+        this.historyList = []
+        // 将本地缓存中的记录也清空
+        localStorage.setItem(key, '[]')
+      } catch (error) {
+        // 不需要设置
+      }
+    },
+    onSearch () {
+      // 首先判断 搜索内容是否为空 为空直接返回
+      if (!this.q) return
+      // 跳转之前，需要把搜索结果q添加到历史记录中，并且同步到本地缓存去 这里要去重set
+      this.historyList.push(this.q)
+      // 一行代码搞定去重
+      this.historyList = Array.from(new Set(this.historyList))
+      // 设置到本地缓存
+      localStorage.setItem(key, JSON.stringify(this.historyList))
+      // 搜索事件触发的时候，应该跳转到搜索结果页，并且携带参数
+      this.$router.push({
+        path: '/search/result',
+        query: { q: this.q }
+      })
     }
   }
   // created () {
