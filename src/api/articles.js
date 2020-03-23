@@ -26,3 +26,10 @@ export function reportArticle (data) {
     method: 'post'
   })
 }
+// 获取联想搜索建议
+export function getSuggestion (params) {
+  return request({
+    url: '/suggestion', // 搜索建议地址
+    params // query参数放在params中
+  })
+}
