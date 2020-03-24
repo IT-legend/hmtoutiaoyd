@@ -26,7 +26,8 @@
           <p>
               <!-- 时间需要过滤器 -->
             <span class="time">{{ item.pubdate | relTime }}</span>&nbsp;
-            <van-tag plain @click="showReply=true">{{ item.reply_count }} 回复</van-tag>
+            <!-- 点击回复标签 弹出面板 需要处理一些业务 -->
+            <van-tag plain @click="openReply">{{ item.reply_count }} 回复</van-tag>
           </p>
         </div>
       </div>
@@ -40,6 +41,21 @@
         <span class="submit" v-else slot="button">提交</span>
       </van-field>
     </div>
+    <!-- 放置评论的评论的弹出面板 -->
+    <!-- 回复 -->
+    <van-action-sheet v-model="showReply" :round="false" class="reply_dialog" title="回复评论">
+      <!-- 列表组件 -->
+      <van-list v-model="reply.loading" :finished="reply.finished" finished-text="没有更多了">
+        <div class="item van-hairline--bottom van-hairline--top" v-for="index in 8" :key="index">
+          <van-image round width="1rem" height="1rem" fit="fill" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+          <div class="info">
+            <p><span class="name">一阵清风</span></p>
+            <p>评论的内容，。。。。</p>
+            <p><span class="time">两天内</span></p>
+          </div>
+        </div>
+      </van-list>
+    </van-action-sheet>
   </div>
 
   <!-- 都不输入框 -->
@@ -59,10 +75,23 @@ export default {
       // 控制提交中状态数据
       submiting: false,
       comments: [], // 神评论数据组
-      offset: null // 分页的依据（偏移量）
+      offset: null, // 分页的依据（偏移量）
+      showReply: false, // 控制评论的评论的面板是否显示
+      // 定义reply，用存放 评论的评论面板 加载信息的全部数据
+      reply: {
+        loading: false, // 表示评论的评论
+        finished: false, // 评论的评论是否加载完成
+        list: [], // 专门存放评论的评论的数据
+        offset: null // 评论的评论分页加载时查询的依据
+      }
     }
   },
   methods: {
+    //   打开回复的面板
+    openReply () {
+      // 点击回复按钮 打开弹层
+      this.showReply = true
+    },
     //   加载方法：滚动条距离底部距离超过一定距离时就会触发
     async onLoad () {
       // 数据加载
@@ -89,6 +118,25 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.reply_dialog {
+  height: 100%;
+  max-height: 100%;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  .van-action-sheet__header {
+    background: #3296fa;
+    color: #fff;
+    .van-icon-close {
+      color: #fff;
+    }
+  }
+  .van-action-sheet__content{
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 10px 44px;
+  }
+}
 .comment {
   margin-top: 10px;
   /deep/ .item {
