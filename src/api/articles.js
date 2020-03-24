@@ -43,6 +43,6 @@ export function searchAticle (params) {
 // 获取文章详情
 export function getArticleInfo (artId) {
   return request({
-    url: `/articles/${artId}` // 获取文表id
+    url: `/articles/${artId}` // 获取文表详情地址
   })
 }
