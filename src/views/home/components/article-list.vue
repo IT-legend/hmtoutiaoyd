@@ -11,7 +11,8 @@
         <!-- 3- 循环内容 用van-cell单元格实现-->
         <van-cell-group>
           <!-- 此时art_id并不是一个数字而是一个大数字对象，v-for的key需要用字符串或者数字，所以会报错 -->
-          <van-cell v-for="item in articles" :key="item.art_id.toString()">
+          <!-- van-cell有一个to属性支持直接跳转，同vue-router中的to -->
+          <van-cell :to="`/article?artId=${item.art_id.toString()}`"  v-for="item in articles" :key="item.art_id.toString()">
             <!-- 4- 放置元素 文章列表的循环项：无图、单图、三图 -->
             <!-- 4-1 三图文章 -->
             <div class="article_item">
@@ -41,7 +42,7 @@
                   <!-- 2-辅助函数的形式处理 -->
                   <!-- @事件名="逻辑处理" 点击事件中触发一个 显示反馈事件 传出点击的文章id -->
                 <span class="close" v-if="user.token"
-                @click="$emit('showAction',item.art_id.toString())">
+                @click.stop="$emit('showAction',item.art_id.toString())">
                   <van-icon name="cross"></van-icon>
                 </span>
               </div>

@@ -40,3 +40,9 @@ export function searchAticle (params) {
     params // 关键词以及分页信息
   })
 }
+// 获取文章详情
+export function getArticleInfo (artId) {
+  return request({
+    url: `/articles/${artId}` // 获取文表id
+  })
+}
