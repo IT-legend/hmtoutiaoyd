@@ -46,7 +46,7 @@ export function getArticleInfo (artId) {
     url: `/articles/${artId}` // 获取文表详情地址
   })
 }
-
+// 获取评论列表
 export function getComments (params) {
   return request({
     url: '/comments',

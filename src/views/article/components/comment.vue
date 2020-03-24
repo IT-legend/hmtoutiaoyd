@@ -27,7 +27,7 @@
               <!-- 时间需要过滤器 -->
             <span class="time">{{ item.pubdate | relTime }}</span>&nbsp;
             <!-- 点击回复标签 弹出面板 需要处理一些业务 -->
-            <van-tag plain @click="openReply">{{ item.reply_count }} 回复</van-tag>
+            <van-tag plain @click="openReply(item.com_id.toString())">{{ item.reply_count }} 回复</van-tag>
           </p>
         </div>
       </div>
@@ -44,14 +44,14 @@
     <!-- 放置评论的评论的弹出面板 -->
     <!-- 回复 -->
     <van-action-sheet v-model="showReply" :round="false" class="reply_dialog" title="回复评论">
-      <!-- 列表组件 -->
-      <van-list v-model="reply.loading" :finished="reply.finished" finished-text="没有更多了">
-        <div class="item van-hairline--bottom van-hairline--top" v-for="index in 8" :key="index">
-          <van-image round width="1rem" height="1rem" fit="fill" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+      <!-- 列表组件 只是关闭第一次自动执行事件-->
+      <van-list @load="getReply"  :immediate-check="false" v-model="reply.loading" :finished="reply.finished" finished-text="没有更多了">
+        <div class="item van-hairline--bottom van-hairline--top" v-for="item in reply.list" :key="item.com_id.toString()">
+          <van-image round width="1rem" height="1rem" fit="fill" :src="item.aut_photo" />
           <div class="info">
-            <p><span class="name">一阵清风</span></p>
-            <p>评论的内容，。。。。</p>
-            <p><span class="time">两天内</span></p>
+            <p><span class="name">{{ item.aut_name }}</span></p>
+            <p>{{ item.content }}</p>
+            <p><span class="time">{{ item.pubdate | relTime }}</span></p>
           </div>
         </div>
       </van-list>
@@ -82,15 +82,42 @@ export default {
         loading: false, // 表示评论的评论
         finished: false, // 评论的评论是否加载完成
         list: [], // 专门存放评论的评论的数据
-        offset: null // 评论的评论分页加载时查询的依据
+        offset: null, // 评论的评论分页加载时查询的依据
+        commentId: null // 用来存放每一条评论的id 用这个id来查询这个评论的 评论
       }
     }
   },
   methods: {
-    //   打开回复的面板
-    openReply () {
+    //   打开回复的面板 只会调用一次
+    openReply (commentId) {
       // 点击回复按钮 打开弹层
       this.showReply = true
+      //   处理,拿到id
+      this.reply.commentId = commentId
+      //   需要在弹出窗口之前 把之前的list清空，即重置数据，下面四行代码实现了这个逻辑
+      this.reply.list = []
+      this.reply.offset = null // 为啥直接等于null？因为我们希望点击弹出回复面板时，展示的新的数据，从第一页开始
+      this.reply.finished = false // 将finished打开
+      this.reply.loading = true // 主动打开加载状态，因为此时没有主动检查了，所以我们主动给打开
+      //   弹出评论的评论的层时，主动的请求数据
+      this.getReply()
+    },
+    // 此方法用来获取评论的评论
+    // 此方法会在第一次加载时执行，也会在加载后面每一页时执行
+    async getReply () {
+      const data = await articles.getComments({
+        type: 'c', // 表示获取评论的评论
+        source: this.reply.commentId, // 获取谁的评论的评论？
+        offset: this.reply.offset // 偏移量:评论的评论的分页依据
+      })
+      //   将数据追加到reply的list的队尾
+      this.reply.list.push(...data.results)
+      this.reply.loading = false // 关闭加载状态
+      this.reply.finished = data.last_id === data.end_id // 相等表示over
+      if (!this.reply.finished) {
+        //   不等 表示还有下一页数据
+        this.reply.offset = data.last_id // 那么就将下一页的分页依据设置给当前的数据
+      }
     },
     //   加载方法：滚动条距离底部距离超过一定距离时就会触发
     async onLoad () {
