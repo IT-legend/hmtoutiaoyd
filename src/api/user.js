@@ -14,3 +14,19 @@ export function login (data) {
   })
 //   返回一个promise对象
 }
+
+// 关注用户接口
+export function followUser (data) {
+  return request({
+    url: '/user/followings',
+    method: 'post',
+    data // body参数
+  })
+}
+// 取消关注用户接口
+export function unfollowUser (autid) {
+  return request({
+    url: `/user/followings/${autid}`,
+    method: 'delete'
+  })
+}
