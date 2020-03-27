@@ -30,3 +30,9 @@ export function unfollowUser (autid) {
     method: 'delete'
   })
 }
+// 获取用户自己的个人信息
+export function getUserInfo () {
+  return request({
+    url: '/user'
+  })
+}
