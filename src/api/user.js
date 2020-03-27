@@ -30,9 +30,14 @@ export function unfollowUser (autid) {
     method: 'delete'
   })
 }
-// 获取用户自己的个人信息
+// 获取用户自己的个人信息、粉丝数、文章数
 export function getUserInfo () {
   return request({
     url: '/user'
+  })
+}
+export function getUserProfile () {
+  return request({
+    url: '/user/profile'
   })
 }
